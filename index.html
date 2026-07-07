@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1조 (공종별 위험성평가)</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome 아이콘 팩 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brandYellow: '#f4ca43',
+            brandYellowHover: '#e0b734',
+            safetyRed: '#ea4335',
+            safetyOrange: '#fbbc05',
+            safetyGreen: '#34a853',
+            siteDark: '#1a1f29'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    /* 스크롤바 커스텀 */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body class="bg-[#ececec] min-h-screen text-slate-800 flex flex-col justify-between transition-colors duration-300">
+
+  <!-- 웹사이트 헤더 -->
+  <header class="bg-[#1e232d] text-white pt-12 pb-8 px-4 md:px-8 text-center border-b-4 border-brandYellow shadow-lg">
+    <h1 class="text-3xl md:text-4xl lg:text-5xl font-black tracking-wide text-brandYellow mb-2 drop-shadow-md">
+      1조 (건설 공종별 안전관리)
+    </h1>
+
+    <!-- 네비게이션 가로형 메뉴바 (알약 형태 감성 고증) -->
+    <div class="max-w-5xl mx-auto mt-8">
+      <nav class="flex flex-wrap justify-center items-center gap-2" id="navContainer">
+        <!-- 홈 버튼 (노란색 꽉 찬 타원형) -->
+        <button onclick="changeMenu('home')" id="btn-home" class="menu-btn px-5 py-2.5 rounded-full text-sm font-bold bg-brandYellow hover:bg-brandYellowHover text-slate-900 shadow-md transition-all duration-200">
+          홈
+        </button>
+        
+        <!-- 공종별 1번 ~ 10번 버튼 -->
+        <button onclick="changeMenu(1)" id="btn-1" class="menu-btn px-4 py-2 rounded-full text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all duration-200">1번</button>
+        <button onclick="changeMenu(2)" id="btn-2" class="menu-btn px-4 py-2 rounded-full text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all duration-200">2번</button>
+        <button onclick="changeMenu(3)" id="btn-3" class="menu-btn px-4 py-2 rounded-full text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all duration-200">3번</button>
+        <button onclick="changeMenu(4)" id="btn-4" class="menu-btn px-4 py-2 rounded-full text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all duration-200">4번</button>
+        <button onclick="changeMenu(5)" id="btn-5" class="menu-btn px-4 py-2 rounded-full text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all duration-200">5번</button>
+        <button onclick="changeMenu(6)" id="btn-6" class="menu-btn px-4 py-2 rounded-full text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all duration-200">6번</button>
+        <button onclick="changeMenu(7)" id="btn-7" class="menu-btn px-4 py-2 rounded-full text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all duration-200">7번</button>
+        <button onclick="changeMenu(8)" id="btn-8" class="menu-btn px-4 py-2 rounded-full text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all duration-200">8번</button>
+        <button onclick="changeMenu(9)" id="btn-9" class="menu-btn px-4 py-2 rounded-full text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all duration-200">9번</button>
+        <button onclick="changeMenu(10)" id="btn-10" class="menu-btn px-4 py-2 rounded-full text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all duration-200">10번</button>
+
+        <!-- 우측 끝 게시판 버튼 -->
+        <button onclick="changeMenu('board')" id="btn-board" class="menu-btn ml-1 md:ml-4 px-5 py-2.5 rounded-full text-sm font-semibold border-2 border-slate-500 bg-transparent hover:bg-slate-800 text-slate-300 transition-all duration-200">
+          게시판
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 알림 배너 -->
+  <div id="toastNotification" class="hidden mx-auto mt-4 w-full max-w-6xl bg-emerald-50 border-l-4 border-emerald-500 text-emerald-800 p-3 rounded-r-lg text-xs md:text-sm shadow-sm flex justify-between items-center transition-all duration-300">
+    <span id="toastText">📢 각 공종별 상세 안전 관리 가이드라인이 성공적으로 로드되었습니다.</span>
+    <button onclick="closeToast()" class="text-emerald-500 hover:text-emerald-700 font-bold ml-2">×</button>
+  </div>
+
+  <!-- 메인 콘텐츠 몸체 -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-8 flex flex-col items-center justify-center">
+    
+    <!-- 1. 홈 화면 (초기 상태) -->
+    <div id="content-home" class="w-full text-center py-12 md:py-16 flex flex-col items-center justify-center">
+      <p class="text-lg md:text-2xl font-bold text-slate-700 leading-relaxed mb-8">
+        건설 공종별 안전관리 포트폴리오에 오신 것을 환영합니다.<br>
+        <span class="text-sm md:text-lg font-medium text-slate-500">상단 메뉴를 클릭하면 각 콘텐츠를 확인할 수 있습니다.</span>
+      </p>
+      
+      <!-- 📱 스마트 현장 모바일 연동 QR 코드 (중앙 정렬 배치) -->
+      <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-md p-8 shadow-xl flex flex-col items-center justify-between text-slate-800 transform hover:scale-[1.01] transition-all duration-300">
+        <div class="text-center w-full">
+          <span class="bg-amber-100 text-amber-800 text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">Mobile Link</span>
+          <h3 class="font-extrabold text-slate-800 text-lg mb-1.5 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-mobile-screen-button text-amber-500 animate-pulse"></i> 스마트 현장 모바일 QR 연동
+          </h3>
+          <p class="text-xs text-slate-500 mb-6 leading-relaxed">
+            QR 코드를 스캔하면 본 시스템으로 즉시 연결됩니다.<br>
+            <span class="text-[11px] text-slate-400">(모바일 현장 실측 가이드라인 및 실무 체크리스트 무전 통제)</span>
+          </p>
+        </div>
+        
+        <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100 flex flex-col items-center gap-2 shadow-inner w-full max-w-[240px]">
+          <img id="qr-code-img" src="" alt="QR Code" class="w-40 h-40 object-contain bg-white p-2 rounded-xl border border-slate-150 shadow-sm">
+          <span id="qr-code-url" class="text-[10px] text-slate-400 font-mono tracking-tight mt-2 max-w-[200px] truncate block">URL 로딩 중...</span>
+        </div>
+        
+        <div class="mt-6 w-full flex gap-1.5 text-xs">
+          <input type="text" id="custom-qr-url" placeholder="연결 주소 입력" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-brandYellow transition-all">
+          <button onclick="updateCustomQR()" class="bg-slate-900 hover:bg-slate-800 text-brandYellow font-extrabold px-4 py-2.5 rounded-xl transition-all shrink-0 shadow-md">QR 적용</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 공종별 가이드라인 임베디드 뷰포트 (1~10번 클릭 시 노출) -->
+    <div id="content-topic" class="w-full hidden flex-col">
+      <div class="w-full bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-2xl flex flex-col">
+        <!-- 뷰포트 상단 가상 주소 바 -->
+        <div class="bg-slate-900 px-4 py-3 flex items-center justify-between border-b border-slate-800 text-slate-300 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+            <span id="viewport-address" class="ml-2 text-slate-400 font-mono tracking-wider">1-1.html (토공사 가이드라인 시스템)</span>
+          </div>
+          <span class="bg-slate-800 text-brandYellow text-[10px] px-2 py-0.5 rounded font-bold uppercase">포트폴리오 동적 로더</span>
+        </div>
+        <!-- 실제 연동용 보더리스 Iframe -->
+        <iframe id="content-iframe" class="w-full h-[85vh] border-0 bg-white" title="안전 관리 세부 연동"></iframe>
+      </div>
+    </div>
+
+    <!-- 3. 게시판 화면 -->
+    <div id="content-board" class="w-full hidden">
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm mb-6">
+        <h2 class="text-2xl font-black text-slate-800 mb-2">📋 실습 협업 게시판</h2>
+        <p class="text-xs text-slate-400">포트폴리오 회의록 및 조원 역할 분담을 기록하고 자유로운 소통을 나누는 공간입니다.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- 역할 분담 -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+          <h3 class="text-base font-bold text-slate-800 border-b pb-2 mb-4 flex items-center justify-between">
+            <span>👥 조원 역할 배분</span>
+            <span class="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded">기록</span>
+          </h3>
+          <ul class="text-xs text-slate-600 space-y-3">
+            <li class="flex justify-between items-center">
+              <span class="font-medium text-slate-800">조장 (발표자)</span>
+              <span class="text-slate-500">위험성평가 계획수립</span>
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="font-medium text-slate-800">조원 A (서기)</span>
+              <span class="text-slate-500">1~5번 안전자료 취합</span>
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="font-medium text-slate-800">조원 B (정리)</span>
+              <span class="text-slate-500">6~10번 안전자료 취합</span>
+            </li>
+            <li class="flex justify-between items-center">
+              <span class="font-medium text-slate-800">조원 C (디자인)</span>
+              <span class="text-slate-500">현장 위험 사진 수집</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- 공지 및 피드백 -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm md:col-span-2">
+          <h3 class="text-base font-bold text-slate-800 border-b pb-2 mb-4">📢 조별 활동 업데이트 게시글</h3>
+          <div class="space-y-4">
+            <div class="p-3 bg-slate-50 rounded-xl">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-bold text-slate-700">1주차: 프로젝트 가이드 수립 완료</span>
+                <span class="text-[10px] text-slate-400">2026.07.01</span>
+              </div>
+              <p class="text-xs text-slate-500">각 공종별로 대형 재해 요인 3가지 및 건설현장 체크리스트를 통일성 있게 구축하기로 결의함.</p>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-xl">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-xs font-bold text-slate-700">2주차: 실시간 데이터베이스 연계 보강</span>
+                <span class="text-[10px] text-slate-400">2026.07.07</span>
+              </div>
+              <p class="text-xs text-slate-500">작업 중 피드백 보강을 위한 실시간 메모 작성 기능 연동 완료. 내보내기 모드로 개별 저장 가능.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 💬 실시간 자유 게시판 및 의견 피드백 (댓글 시스템) -->
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm md:col-span-3">
+          <h3 class="text-base font-bold text-slate-800 border-b pb-2 mb-4 flex items-center justify-between">
+            <span class="flex items-center gap-1.5">
+              <i class="fa-solid fa-comments text-amber-500"></i> 자유 의견수렴 및 실시간 피드백
+            </span>
+            <span class="text-[10px] bg-amber-50 text-amber-700 px-2.5 py-0.5 rounded-full font-bold" id="comment-count">
+              의견 0개
+            </span>
+          </h3>
+
+          <!-- 댓글 목록 출력부 -->
+          <div id="comment-list" class="space-y-3 max-h-[350px] overflow-y-auto mb-4 pr-1">
+            <div id="no-comment-msg" class="text-center py-10 text-slate-400 text-xs">
+              등록된 소통 의견이 없습니다. 첫 번째 의견을 자유롭게 남겨보세요!
+            </div>
+          </div>
+
+          <!-- 댓글 등록 폼 -->
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+              <input type="text" id="comment-writer" placeholder="작성자명 (예: 조원 A)" class="bg-white border border-slate-200 p-2.5 rounded-lg text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-brandYellow" />
+              <input type="text" id="comment-text" placeholder="본 포트폴리오 안전성 검증 사항이나 현장 피드백 의견을 자유롭게 입력해 주세요." class="md:col-span-3 bg-white border border-slate-200 p-2.5 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-brandYellow" onkeydown="if(event.key === 'Enter') addComment()" />
+            </div>
+            <div class="flex justify-between items-center text-xs">
+              <span class="text-[10px] text-slate-400">💡 브라우저 내부 스토리지(localStorage)와 기동되어 페이지를 새로고침해도 글이 사라지지 않습니다.</span>
+              <button onclick="addComment()" class="bg-slate-900 hover:bg-slate-800 text-brandYellow text-xs font-bold px-4 py-2 rounded-lg shadow-md transition-all flex items-center gap-1.5">
+                <i class="fa-solid fa-paper-plane text-[10px]"></i> 등록하기
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- 웹사이트 푸터 (통합 보존 내보내기 툴 패널 포함) -->
+  <footer class="bg-[#1e232d] text-slate-400 text-xs py-10 px-4 border-t border-slate-800">
+    <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="text-center md:text-left">
+        <p class="mb-1 font-bold text-slate-300">1조 건설공종별 위험성평가 종합 시스템 &copy; 2026.</p>
+        <p class="text-slate-500 text-[11px]">스마트안전공학 실무설계 포트폴리오 프로젝트 산출물</p>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <button onclick="exportFullHTML()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg flex items-center gap-1.5 transition-all shadow-md">
+          💾 통합 포트폴리오 HTML 다운로드
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- 스크립트 엔진 (각 서브 가이드라인의 원본 코드를 완전하게 보관하는 보관소) -->
+  <script>
+    // 상태 관리 변수
+    let currentMenu = 'home'; // 'home', 'board', 1~10
+    let comments = []; // 실시간 자유 게시판 댓글 데이터 저장소
+
+    // 각 10가지 가이드라인 원본 HTML 스트링 리포지토리
+    const subpagesContent = {
+      1: `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>토공사 위험성평가 시스템</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 p-6 min-h-screen">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <!-- 상단 헤더 -->
+        <div class="bg-slate-800 border-l-8 border-amber-500 p-6 rounded-r-2xl shadow-xl">
+            <h1 class="text-2xl font-black text-amber-500 flex items-center gap-2">
+                <i class="fa-solid fa-digging"></i> 01. 토공사 위험성평가 가이드라인
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">지반 붕괴 메커니즘 차단 및 중장비 사각지대 안전 확보 시스템</p>
+        </div>
+
+        <!-- 1. 주요 위험 요인 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-amber-500">■</span> 1. 공종별 핵심 위험 요인
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                <div class="bg-slate-950 p-4 rounded-xl border border-rose-500/30">
+                    <span class="bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">치명적</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">토사 붕괴</h3>
+                    <p class="text-slate-400">지반 연약화 또는 적정 안식각(경사도) 미확보로 인한 굴착면 사면 무너짐.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">협착 위험</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">중장비 충돌 및 협착</h3>
+                    <p class="text-slate-400">굴착기, 덤프트럭 등 건설기계 회전 및 운행 사각지대 내 작업자 진입.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">전도 위험</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">중장비 전도</h3>
+                    <p class="text-slate-400">연약지반에서의 무리한 장비 조작 및 굴착 단부 끝부분 과접근으로 인한 넘어짐.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">추락 위험</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">개구부 및 단부 추락</h3>
+                    <p class="text-slate-400">심층 굴착 주변부 가설 안전 난간 미설치로 인한 근로자 실족 추락.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 md:col-span-2 lg:col-span-1">
+                    <span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">2차 재해</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">지하 매설물 파손</h3>
+                    <p class="text-slate-400">사전 조사 미흡으로 땅속 가스관, 고압 전선 등을 타격하여 유발하는 폭발 및 감전.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 대표적인 재해 사례 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-rose-500">■</span> 2. 현장 중대재해 발생 사례
+            </h2>
+            <div class="space-y-3 text-xs">
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">굴착 작업 중 흙벽 토사 붕괴 매몰 사고</h4>
+                        <span class="text-slate-500 text-[10px]">2026.06.26 / 인천 서구</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">시설물 매설 공사 현장에서 2~3m 깊이의 굴착면 내부에 흙막이 지보공 등 안전 가시설을 미설치하고 작업하던 중, 사면 토사가 일시에 무너져 내려 근로자가 매몰되어 사망함.</p>
+                </div>
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">굴착기 선회 반경 사각지대 충돌 압사 사고</h4>
+                        <span class="text-slate-500 text-[10px]">경기 성남 판교</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">신축 건설 현장 지하 공간에서 철골 작업을 준비하던 근로자가 신호수 배치 및 출입 통제 바리케이드가 없는 상태에서 선회 중이던 굴착기 사각지대로 진입하여 치여 사망함.</p>
+                </div>
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">연약지반 평탄화 미흡에 따른 굴착기 전도 사고</h4>
+                        <span class="text-slate-500 text-[10px]">전북 김제 새만금</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">평탄화가 이루어지지 않은 연약 지반 구간을 이동하던 굴착기가 한쪽으로 무너지며 물웅덩이로 전도됨. 현장 내 전담 유도자나 신호수가 배치되지 않아 기사가 대피하지 못하고 사망함.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 안전성평가 실무 체크리스트 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-emerald-500">■</span> 3. 작업 전/중/후 핵심 안전 체크리스트
+            </h2>
+            <p class="text-[11px] text-slate-400 mb-4">항목을 클릭하면 완료 처리 선이 그어집니다.</p>
+            <div class="space-y-2 text-xs">
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">굴착 깊이 1.5m 이상 시 법정 흙막이 지보공을 구조 검토서에 의거하여 정상 설치하였는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">토질 상태별 규정 안식각(안전 기울기)을 준수하고 우천 시 배수로 조치를 완료했는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">중장비 가동 영역 내 전담 신호수(유도자) 배치 및 위험 반경 출입 통제 바리케이드를 쳤는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">건설기계 투입 전 후방 카메라, 경보기, 자동 정지 장치 등 안전장치를 매일 점검하는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">굴착 착공 전 도면 검토 및 지표면 탐사(지하매설물 가스·통신·전력 전선 파손 예방)를 수행했는가?</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+
+      2: `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>기초 및 말뚝공사 위험성평가 시스템</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 p-6 min-h-screen">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <!-- 상단 헤더 -->
+        <div class="bg-slate-800 border-l-8 border-amber-500 p-6 rounded-r-2xl shadow-xl">
+            <h1 class="text-2xl font-black text-amber-500 flex items-center gap-2">
+                <i class="fa-solid fa-mountain-city"></i> 02. 기초 및 말뚝(항타) 공사 위험성평가 가이드라인
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">대형 항타기 부등침하 전도 방지 및 권상 와이어로프 마단 낙하 차단 시스템</p>
+        </div>
+
+        <!-- 1. 주요 위험 요인 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-amber-500">■</span> 1. 공종별 핵심 위험 요인
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                <div class="bg-slate-950 p-4 rounded-xl border border-rose-500/30">
+                    <span class="bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">대형 전도</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">항타기 및 크레인 전도</h3>
+                    <p class="text-slate-400">자체 중량이 극도로 무거운 장비가 연약지반 주행 및 파일 작업 시, 부등침하로 장비 균형 이탈.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">말뚝 낙하</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">PHC 말뚝 낙하 및 비래</h3>
+                    <p class="text-slate-400">콘크리트 말뚝을 인양하는 와이어로프의 마모/변형 또는 결속 상태 불량으로 말뚝이 지상으로 수직 추락.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">사면 무너짐</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">지반 붕괴 및 사면 함몰</h3>
+                    <p class="text-slate-400">기초 굴착 단부의 사면 경사도 규정 미준수 및 유입 지하수 차단 미흡으로 주변 토사가 한순간에 붕괴.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">협착 충돌</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">장비 선회반경 충돌 협착</h3>
+                    <p class="text-slate-400">파일 정렬 및 유도 작업 중, 가동 장비의 선회 영역(사각지대) 내 무단 진입으로 기계에 충돌·끼임.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 대표적인 재해 사례 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-rose-500">■</span> 2. 현장 중대재해 발생 사례
+            </h2>
+            <div class="space-y-3 text-xs">
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">주행로 철판 포설 부실에 따른 대형 항타기 전도 사고</h4>
+                        <span class="text-slate-500 text-[10px]">기초 공사 사례</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">아파트 건설 현장에서 바닥 지반 다짐을 소홀히 하고 철판 포설 등 주행로 보강이 부실한 상태로 항타기가 무리하게 이동했습니다. 이 과정에서 한쪽 주행로가 침하되며 장비가 균형을 잃고 전도되어 사망자가 발생했습니다.</p>
+                </div>
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">손상된 인양 와이어로프 파단에 의한 PHC 말뚝 낙하 사고</h4>
+                        <span class="text-slate-500 text-[10px]">말뚝 공사 사례</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">크레인으로 콘크리트 말뚝을 안착 지점으로 이동하기 위해 권상하던 도중, 노후화되어 미세한 소선 파단이 누적된 와이어로프가 장중한 하중을 이기지 못하고 단선 파열됨. 낙하한 말뚝이 하부에서 안착 방향을 수동 유도하던 근로자를 강타함.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 안전성평가 실무 체크리스트 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-emerald-500">■</span> 3. 작업 전/중/후 핵심 안전 체크리스트
+            </h2>
+            <p class="text-[11px] text-slate-400 mb-4">항목을 클릭하면 완료 처리 선이 그어집니다.</p>
+            <div class="space-y-2 text-xs">
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">대형 항타기 및 크레인 운행 경로에 철판 포설 및 바닥 지반 강력 다짐(지반 부등침하 방지)을 완료하였는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">말뚝 인양 시 와이어로프의 마모, 변형, 소선 파단 상태 및 엔드 링크 고정 상태를 작업 전 육안 실측 점검했는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">굴착 부위에 시추 조사 결과를 검토하고 매설물 탐사 및 법정 안식각(기초 굴착 사면 기울기)을 확실하게 수립했는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">장비의 선회 영역에 위험 경보 라인을 가설하고, 근로자 진입을 원천 제어할 고정 전담 신호수를 조 배치하였는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">작업 착수 전 TBM 미팅을 통해 당일 장비 운행 노선 및 파일 유도 경로, 사각지대 정보를 작업 조 전체가 완벽하게 숙지했는가?</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+
+      3: `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>철근공사 위험성평가 시스템</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 p-6 min-h-screen">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <!-- 상단 헤더 -->
+        <div class="bg-slate-800 border-l-8 border-amber-500 p-6 rounded-r-2xl shadow-xl">
+            <h1 class="text-2xl font-black text-amber-500 flex items-center gap-2">
+                <i class="fa-solid fa-layer-group"></i> 03. 철근공사 위험성평가 가이드라인
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">양중 와이어 파단 방지 및 수직 배근 자립 세장비 좌굴 도괴 방지</p>
+        </div>
+
+        <!-- 1. 주요 위험 요인 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-amber-500">■</span> 1. 공종별 핵심 위험 요인
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">파단 위험</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">양중시 와이어 파단 및 낙하</h3>
+                    <p class="text-slate-400">줄걸이 내각 60도 초과 시 분력 증가로 와이어 파단 혹은 무게중심 편심 모멘트로 자재 슬립 이탈.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">비산/협착</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">가공 절단 탄성 파편 비산</h3>
+                    <p class="text-slate-400">기계 절단 시 탄성 변형 에너지가 고속 파편으로 비산 및 절곡기 회전축 토크 협착 상해.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-rose-500/30">
+                    <span class="bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">구조 전도</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">수직 자립 배근 강풍 도괴</h3>
+                    <p class="text-slate-400">세장비 증가로 자체 지지력이 극하강한 상태에서 외력(강풍) 부가 시 일시 전도(P-Delta 효과).</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">추락 위험</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">외곽 단부 미끄럼 추락</h3>
+                    <p class="text-slate-400">박리제 혹은 우천 수막 현상으로 마찰계수 하강에 따른 단부 실족 및 구명줄 지지단 파단.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">부등침하</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">야적 하중 지반 부등침하</h3>
+                    <p class="text-slate-400">수 톤 단위 자재 집중 적재 시 사질토/연약지반 허용 지지력 초과 부등침하로 적재물 수평 붕괴.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">보건/협착</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">인력 중량물 요추 하중 및 결속 협착</h3>
+                    <p class="text-slate-400">다인 운반 시 하중 불균형 골절, 스페이서 삽입 중 배근 탄성 처짐에 의한 단면 교차점 협착.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 대표적인 재해 사례 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-rose-500">■</span> 2. 현장 중대재해 발생 사례
+            </h2>
+            <div class="space-y-3 text-xs">
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">과도한 결속각 양중 중 슬링벨트 파단 사고</h4>
+                        <span class="text-slate-500 text-[10px]">2023.11 / 경남 창원</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">약 2.4톤의 철근 다발 인양 중, 과도한 결속 각도로 인한 인장력을 견디지 못하고 슬링벨트가 파단됨. 하부에서 대기 중이던 전담 신호수를 직격하여 사망함.</p>
+                </div>
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">임시 버팀대 미설치에 따른 옹벽 철근 강풍 전도 사고</h4>
+                        <span class="text-slate-500 text-[10px]">2024.03 / 인천 서구</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">4.2m 높이의 옹벽 철근 조립 후 가이 와이어나 가버팀대를 설치하지 않은 상태에서 순간 풍속 12ms의 강풍을 맞아 배근 전체가 도괴됨. 하부 청소 중이던 근로자가 압사함.</p>
+                </div>
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">야간 조도 부족으로 인한 슬래브 개구부 추락 사고</h4>
+                        <span class="text-slate-500 text-[10px]">2025.10 / 전남 광양</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">공기 단축을 위해 야간 기초 배근 결속 중, 국부 조명 사각지대의 그늘에 가려진 슬래브 개구부 철근 틈새를 식별하지 못해 근로자가 실족 추락하여 심각한 관절 파열 재해를 입음.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 안전성평가 실무 체크리스트 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-emerald-500">■</span> 3. 작업 전/중/후 핵심 안전 체크리스트
+            </h2>
+            <p class="text-[11px] text-slate-400 mb-4">항목을 클릭하면 완료 처리 선이 그어집니다.</p>
+            <div class="space-y-2 text-xs">
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">철근 인양 시 2줄 걸이를 엄격히 준수하고 줄걸이 내각을 60도 이하로 유지 및 유도 로프(태그 라인)를 체결했는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">절단 설비 칼날 부위에 비산 방지 투명 덮개를 고정하고 짧은 자재 절단 시 전용 보조 집게를 사용하는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">수직 자립 철근 조립 시 와이어로프 및 강관 서포트를 격층격간 배치하고 돌출 단면에 고강도 수지 안전 캡을 씌웠는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">외곽 고소 단부에 가설 안전난간을 설치하고 수평 구명줄 부착설비가 최소 22.2kN 이상의 설계 인장 한계력을 확보했는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">다단 야적 시 지반 다짐 및 고임목 규격을 통일하고, 야간 작업 영역에 조도 기준 최소 75 Lux 이상을 균일 확보했는가?</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+
+      4: `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>거푸집 및 동바리 공사 위험성평가 시스템</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 p-6 min-h-screen">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <!-- 상단 헤더 -->
+        <div class="bg-slate-800 border-l-8 border-amber-500 p-6 rounded-r-2xl shadow-xl">
+            <h1 class="text-2xl font-black text-amber-500 flex items-center gap-2">
+                <i class="fa-solid fa-person-digging"></i> 04. 거푸집 및 동바리 공사 위험성평가 가이드라인
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">동바리 기둥 좌굴 붕괴 메커니즘 차단 및 규격 시공 검증 제어</p>
+        </div>
+
+        <!-- 1. 핵심 위험 요인 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-amber-500">■</span> 1. 핵심 위험 요인 (Risk Factors)
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                <div class="bg-slate-950 p-4 rounded-xl border border-rose-500/30">
+                    <span class="bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">치명적 구조좌굴</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">수평 연결재 및 가새(Bracing) 누락</h3>
+                    <p class="text-slate-400 leading-relaxed">동바리가 연직 하중은 견디더라도 타설 시 발생하는 좌우 유동하중과 진동을 잡아줄 가새가 없으면, 기둥이 순간적으로 휘어 무너지며 좌굴 붕괴가 발생합니다.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">강도발현 불량</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">하부 구조 동바리 무단 조기 해체</h3>
+                    <p class="text-slate-400 leading-relaxed">콘크리트가 목표 강도에 도달하기 전 공기 단축을 위해 하부 동바리를 먼저 해체하여, 상층부 타설 시 엄청난 무게가 지지대 없이 하부 구조물에 전달되며 도미노 붕괴로 이어집니다.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">지반 침하</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">조립도 미준수 및 연약 지반 침하</h3>
+                    <p class="text-slate-400 leading-relaxed">구조검토서와 설계 도면을 무시하고 임의로 동바리 기둥 간격을 넓게 시공하거나, 잭베이스(밑받침 철물) 하부에 깔목·깔판을 대지 않는 경우입니다. 타설 시 특정 부위로 무게가 쏠리며 지반이 내려앉아 전체 가설 구조물이 균형을 잃고 주저앉습니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 대표적인 재해 사례 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-rose-500">■</span> 2. 실제 중대재해 사례 (Case Studies)
+            </h2>
+            <div class="space-y-3 text-xs">
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">교량 슬래브 동바리 수평 연결재 미비 연쇄 좌굴 사고</h4>
+                        <span class="text-slate-500 text-[10px]">2015.02 / 경기 용인</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed mb-1"><strong>피해규모:</strong> 사망 2명, 부상 6명</p>
+                    <p class="text-slate-400 leading-relaxed">구조물 높이가 5m를 초과해 높이 2m마다 수평 연결재를 단단히 구속해야 했으나 대거 누락하고 철선으로 임시 고정함. 타설 진동 하중이 가해지자 전체 지주 기둥들이 도미노처럼 연쇄 좌굴 붕괴됨.</p>
+                </div>
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">아파트 신축공사 하부 동바리 조기 해체 연쇄 붕괴</h4>
+                        <span class="text-slate-500 text-[10px]">2022.01 / 광주 서구</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed mb-1"><strong>피해규모:</strong> 사망 6명, 부상 1명</p>
+                    <p class="text-slate-400 leading-relaxed">콘크리트 강도 발현이 미흡한 상태에서 하중 분산을 위해 설치해야 하는 아래 3개 층의 동바리를 임의로 조기 철거함. 지지대가 없는 극한 피로 하부 구조에 39층 타설이 강행되면서 16개 층이 한번에 허물어짐.</p>
+                </div>
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">물류창고 시스템 동바리 간격 임의 확장 붕괴 사고</h4>
+                        <span class="text-slate-500 text-[10px]">2022.10 / 경기 안성</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed mb-1"><strong>피해규모:</strong> 사망 3명, 부상 2명</p>
+                    <p class="text-slate-400 leading-relaxed">공기 단축을 이유로 도면상의 시스템 동바리 기둥 간격을 임의로 넓혀 포설했고, 철판 거푸집(데크플레이트) 걸침 길이까지 미달되어 하중 편심이 발생하면서 가설 구조물이 공중에서 부서져 내려 10m 추락 매몰됨.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 안전성평가 실무 체크리스트 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-emerald-500">■</span> 3. 현장 안전 체크리스트 (Checklist)
+            </h2>
+            <p class="text-[11px] text-slate-400 mb-4">항목을 클릭하면 완료 처리 선이 그어집니다.</p>
+            <div class="space-y-2 text-xs">
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">현장에 구조검토서와 소장·감리의 승인을 받은 '거푸집 동바리 조립도'가 비치되어 있는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">설치된 동바리의 수평·수직 기둥 간격을 설계 도면 치수와 실측 비교했을 때 법정 허용 오차 이내로 정확히 일치하는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">파이프 서포트 높이가 3.5m를 초과할 경우 높이 2m 이내마다 X-Y 양방향으로 견고하게 수평 연결재를 단단히 구속하였는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">구조적 뒤틀림이나 진동 변위를 잡기 위해 가새(Bracing) 보강 조치를 전용 연결 클램프로 견고히 고정 결속했는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">동바리 최하단 잭베이스 하부에 균열이나 미끄러짐이 없는 온전한 강재 깔판 또는 깔목 배치를 지반 침하 대비용으로 설치하였는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">타설 위치 기준으로 아래 3개 층에 정상적인 동바리 존치가 이행되어 있으며, 해체 구역은 공인 압축강도 성적 검증을 거쳤는가?</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+
+      5: `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>콘크리트 타설공사 위험성평가 시스템</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 p-6 min-h-screen">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <!-- 상단 헤더 -->
+        <div class="bg-slate-800 border-l-8 border-amber-500 p-6 rounded-r-2xl shadow-xl">
+            <h1 class="text-2xl font-black text-amber-500 flex items-center gap-2">
+                <i class="fa-solid fa-hard-hat"></i> 05. 콘크리트 타설공사 위험성평가 가이드라인
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">거푸집 측압 유도 터짐 제어 및 하부 동바리 감시인 상시 배치</p>
+        </div>
+
+        <!-- 1. 주요 위험 요인 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-amber-500">■</span> 1. 공종별 핵심 위험 요인
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                <div class="bg-slate-950 p-4 rounded-xl border border-rose-500/30">
+                    <span class="bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">구조 붕괴</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">거푸집 및 가설 동바리 붕괴</h3>
+                    <p class="text-slate-400">굳지 않은 콘크리트 자중 및 타설시 고압 충격 하중을 지주가 견디지 못해 일시 무너짐 유발.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">장비 전도</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">펌프카 전도 및 엔드호스 타격</h3>
+                    <p class="text-slate-400">성토 지반 침하로 아우트리거 지지력이 상실되며 장비 전도, 또는 고압 압송관 요동에 따른 근로자 타격.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">추락/질식</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">단부 추락 및 양생시 밀폐 질식</h3>
+                    <p class="text-slate-400">슬래브 가장자리 미장 작업 중 실족 추락 및 겨울철 야간 갈탄 연소 양생에 따른 가스 질식 위험.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 대표적인 재해 사례 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-rose-500">■</span> 2. 현장 중대재해 발생 사례
+            </h2>
+            <div class="space-y-3 text-xs">
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">동바리 수평 연결재 누락에 따른 슬래브 붕괴</h4>
+                        <span class="text-slate-500 text-[10px]">공종 사고 사례</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">3층 슬래브 콘크리트 타설 중, 하부에 가설된 시스템 동바리의 구조적 수평 연결재가 다수 누락됨. 타설 집중 하중을 이기지 못하고 거푸집 시스템 전체가 좌굴 붕괴되어 작업자 다수가 매몰됨.</p>
+                </div>
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">성토지반 철판 미포설에 따른 콘크리트 펌프카 전도 사고</h4>
+                        <span class="text-slate-500 text-[10px]">공종 사고 사례</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">성토(흙을 돋운) 지반 구간에서 바닥 다짐 및 중량 분산용 철판 깔판을 깔지 않고 펌프카 아우트리거를 확장 가동하던 중 지반 부등침하가 발생함. 장비 붐대가 전도 파손되며 인근 근로자를 강타함.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 안전성평가 실무 체크리스트 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-emerald-500">■</span> 3. 작업 전/중/후 핵심 안전 체크리스트
+            </h2>
+            <p class="text-[11px] text-slate-400 mb-4">항목을 클릭하면 완료 처리 선이 그어집니다.</p>
+            <div class="space-y-2 text-xs">
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">거푸집 및 동바리는 하중 분산용 구조 검토를 필히 거친 가설 조립도대로 수평연결재 누락 없이 배치되었는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">펌프카 셋팅 지반의 견고성을 확인하고, 아우트리거 하부에 지반 가라앉음 방지용 전용 두꺼운 철판 깔판을 깔았는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">타설 중 편심 하중이 과도하게 집중되어 붕괴되지 않도록 한곳에 밀어치지 않고 고르게 분산 타설을 이행하는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">타설 시 변형이나 지주 이상 유무를 하부에서 즉시 실시간 계측 및 무전 전파할 '전담 하부 감시인'을 고정 배치했는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">설계 기준 강도가 완벽히 상회 확보될 때까지 가설재 조기 해체를 엄격히 금지하고 밀폐 보온 양생시 가스 질식 예방 대책을 수립했는가?</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+
+      6: `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>비계 및 가설구조물 공사 위험성평가 시스템</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 p-6 min-h-screen">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <!-- 상단 헤더 -->
+        <div class="bg-slate-800 border-l-8 border-amber-500 p-6 rounded-r-2xl shadow-xl">
+            <h1 class="text-2xl font-black text-amber-500 flex items-center gap-2">
+                <i class="fa-solid fa-helmet-safety"></i> 06. 비계 및 가설구조물 공사 위험성평가 가이드라인
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">이동식 비계 전도 방지 아웃트리거 및 고소 달비계 에지 보호대 체결 검증</p>
+        </div>
+
+        <!-- 1. 핵심 위험 요인 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-amber-500">■</span> 1. 유해·위험요인 (Hazard Factors)
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                <div class="bg-slate-950 p-4 rounded-xl border border-rose-500/30">
+                    <span class="bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">이동식 및 말비계</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">아웃트리거 미설치 및 난간 미비</h3>
+                    <p class="text-slate-400 leading-relaxed">이동식 비계 하부 전도방지 지지대(아웃트리거) 해체 상태 조작으로 구조물이 통째로 전도되거나, 최상부 발판 단부 안전난간 누락으로 균형을 상실하여 추락합니다.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">시스템 및 강관비계</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">안전장치 선해체 및 동시작업</h3>
+                    <p class="text-slate-400 leading-relaxed">비계 해체 시 편의를 위해 벽이음(고정재)과 안전난간을 먼저 뜯어내어 구조물이 일시 붕괴되거나, 상하부 동시 작업 중 위에서 떨어진 자재에 타격되어 추락합니다.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">외벽 고소 달비계</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">로프 모서리 마찰 단선 및 고정점 불량</h3>
+                    <p class="text-slate-400 leading-relaxed">옥상 기둥 고정 앵커가 풀리거나, 섬유로프가 건물의 날카로운 모서리(콘크리트 에지)에 쓸려 서서히 마모되고 뜯어지며 로프 단선과 함께 추락 사고를 일으킵니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 대표적인 재해 사례 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-rose-500">■</span> 2. 실제 중대재해 사례 (Case Studies)
+            </h2>
+            <div class="space-y-3 text-xs">
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">이동식 비계 최상부 작업 난간 부재 추락 사고</h4>
+                        <span class="text-slate-500 text-[10px]">2025.06 / 강원 태백시 옹벽 현장</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">옹벽 철근 배근 작업을 위해 약 2.6m 높이의 이동식 비계에 올라가 작업하던 중, 최상부 단부 난간대가 부재하여 발을 헛디디며 추락 사망함. 안전대 미체결 및 관리 감독 소홀이 직접적인 원인으로 작용함.</p>
+                </div>
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">시스템 비계 조기 해체(선해체)에 따른 낙하 추락 사고</h4>
+                        <span class="text-slate-500 text-[10px]">2021.04 / 경기 파주시 신축 현장</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">가설 시스템 비계 해체 공사 중, 작업 능률 확보를 위해 미리 안전난간을 철거해 둔 2단 발판에서 해체된 자재를 하부로 전달하려던 작업자가 중심을 잃어 난간 지지대 없이 흙 바닥으로 고속 추락해 사망함.</p>
+                </div>
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">외벽 보수 달비계 독립 구명줄 미설치 추락 참사</h4>
+                        <span class="text-slate-500 text-[10px]">외벽 가설재 사례 / 울산 중구 아파트</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">옥상에서 달비계를 타고 외벽 보수 중 메인 결속 로프 매듭이 풀리며 탑승대와 함께 동반 추락해 사망함. 비상시 지탱해 줄 독립 수직구명줄(안전대 체결용 별도 로프)을 옥상에 가설하지 않아 로프 단선이 사망으로 즉각 직결됨.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 안전성평가 실무 체크리스트 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-emerald-500">■</span> 3. 현장 안전대책 체크리스트 (Checklist)
+            </h2>
+            <p class="text-[11px] text-slate-400 mb-4">항목을 클릭하면 완료 처리 선이 그어집니다.</p>
+            <div class="space-y-2 text-xs">
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">이동식 비계 상부 작업발판 사방에 안전난간(상부 난간대 90~120cm, 중간 난간대) 및 발끝막이판이 확실히 고정되었는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">이동식 비계 사용 전 바퀴 스톱 브레이크를 조이고, 흔들림 차단용 전도방지용 아웃트리거를 사방에 완전 밀착 지지시켰는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">비계 해체는 조립의 역순(상부부터 점진적으로) 진행하며, 벽이음 장치나 안전난간을 완료 전에 임의로 '선해체'하지 않았는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">비계 조립·해체 구간에 독립 수직 및 수평 구명줄을 설치하고, 근로자가 가동 안전 훅을 체결한 상태에서만 보행 제어하는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">달비계 탑승 시, 주 인양 로프와 완전히 독립된 구역에 결속된 별도의 수직 구명줄(추락방지기 코레코 결속용)을 내려놓았는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">섬유로프를 최소 2개소 이상의 확실한 옥상 단단한 콘크리트 구조물에 묶고, 에지 모서리 접촉점에는 마모 방지 패드를 체결했는가?</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+
+      7: `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>철골공사 위험성평가 시스템</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 p-6 min-h-screen">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <!-- 상단 헤더 -->
+        <div class="bg-slate-800 border-l-8 border-amber-500 p-6 rounded-r-2xl shadow-xl">
+            <h1 class="text-2xl font-black text-amber-500 flex items-center gap-2">
+                <i class="fa-solid fa-shapes"></i> 07. 철골(H-Beam) 공사 위험성평가 가이드라인
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">고소 링벨트 안전대 체결 마스터 구명선 설치 및 앵커볼트 완전 조임 원칙</p>
+        </div>
+
+        <!-- 1. 주요 위험 요인 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-amber-500">■</span> 1. 공종별 핵심 위험 요인
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                <div class="bg-slate-950 p-4 rounded-xl border border-rose-500/30">
+                    <span class="bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">고소 추락</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">고소 보 이동 중 추락</h3>
+                    <p class="text-slate-400">H-Beam 보 위를 보행 이동할 때 체결할 수평 구명줄(마스터 로프) 미비로 인한 실족 추락.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">중량 낙하</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">양중 자재 및 공구 낙하</h3>
+                    <p class="text-slate-400">크레인 인양 중 와이어 결속 풀림 및 고소 상부 작업자의 볼트/와셔, 수공구 떨어짐(맞음 사고).</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">구조 도괴</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">기둥 조기 가조립 도괴</h3>
+                    <p class="text-slate-400">기초 앵커볼트 가체결 상태에서 크레인 인양 훅 와이어를 조기 해제하여 강풍에 기둥 전도 쓰러짐.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">협착 위험</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">중량 구조 부재간 협착</h3>
+                    <p class="text-slate-400">H-Beam 접합부 고정 및 정밀 거치 유도 과정에서 중량 플랜지 부재 사이에 신체 끼임.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 대표적인 재해 사례 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-rose-500">■</span> 2. 현장 중대재해 발생 사례
+            </h2>
+            <div class="space-y-3 text-xs">
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">H-Beam 상부 이동 중 수평 구명선 부재 추락 사고</h4>
+                        <span class="text-slate-500 text-[10px]">고소 철골 사례</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">약 8m 높이의 철골 보(H-Beam) 상부에서 연결 상태를 점검하며 보행 이동하던 작업자가, 안전보호구 부착 설비(수평 안전 구명줄)가 가설되지 않아 걸이를 체결하지 못하고 발을 헛디뎌 콘크리트 바닥으로 추락해 사망함.</p>
+                </div>
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">앵커볼트 미완전 체결 상태 인양 와이어 분리 도괴 사고</h4>
+                        <span class="text-slate-500 text-[10px]">철골 도괴 사례</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">철골 구조물 기둥 안착 작업 중, 베이스 플레이트의 앵커볼트를 완전 체결 및 가이 로프 지지를 수동 누락한 채 무리하게 크레인 인양 와이어 로프를 먼저 해제함. 자립 지지력이 없는 기둥 구조물이 바람을 맞아 측면으로 쓰러지며 직격함.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 안전성평가 실무 체크리스트 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-emerald-500">■</span> 3. 작업 전/중/후 핵심 안전 체크리스트
+            </h2>
+            <p class="text-[11px] text-slate-400 mb-4">항목을 클릭하면 완료 처리 선이 그어집니다.</p>
+            <div class="space-y-2 text-xs">
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">철골조립 안전작업계획서를 사전 수립공유하고, 순간 풍속 10m/s 이상 시 작업을 즉각 중단시키는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">작업자는 쌍줄 안전대와 턱끈이 확실하게 밀착 고정된 규격 안전모를 필히 현장 착용하고 있는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">H-Beam 부재 크레인 인양 시 2줄 걸이 원칙을 준수하고 작업 반경 내 일반 근로자의 통행을 통제선으로 차단하는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">베이스 앵커볼트가 100% 완전 결속되고 가이 로프 임시 고정이 확인되기 전 크레인 와이어를 해제하지 않는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">수평 보 이동 구간에 직경 16mm 이상의 고강도 마스터 로프(구명줄) 및 하부 추락방지망을 법정 기준대로 설치했는가?</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+
+      8: `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마감 및 외벽 도장공사 위험성평가 시스템</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 p-6 min-h-screen">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <!-- 상단 헤더 -->
+        <div class="bg-slate-800 border-l-8 border-amber-500 p-6 rounded-r-2xl shadow-xl">
+            <h1 class="text-2xl font-black text-amber-500 flex items-center gap-2">
+                <i class="fa-solid fa-paint-roller"></i> 08. 마감 및 외벽 유리·도장 위험성평가 가이드라인
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">로프 모서리 마찰 끊어짐 극복 방지용 패드 및 고소 독립 생명줄 이중 체결</p>
+        </div>
+
+        <!-- 1. 핵심 위험 요인 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-amber-500">■</span> 1. 핵심 위험요인 (Hazard Factors)
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                <div class="bg-slate-950 p-4 rounded-xl border border-rose-500/30">
+                    <span class="bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">마모 단선</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">섬유로프 마모 및 모서리 파단</h3>
+                    <p class="text-slate-400 leading-relaxed">옥상의 날카로운 콘크리트 사면 옹벽 에지(Edge)나 날카로운 대리석 마감재 부재에 매달려 상하 이동 시, 쓸림에 의해 로프가 순식간에 단선되며 붕괴 추락합니다.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">독립생명줄 부재</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">독립 구명선 누락 및 미체결</h3>
+                    <p class="text-slate-400 leading-relaxed">달비계 주 구동선 외에 비상용 별도 수직 생명줄(Life line)을 가설하지 않거나, 작업 편의상 개인 전신안전벨트 고리를 구명선에 체결하지 않아 1차선 이탈 시 2차 추락 방어선이 붕괴됩니다.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">편심 뒤집힘</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">유리 설치 시 편심 하중 이탈</h3>
+                    <p class="text-slate-400 leading-relaxed">고중량 외벽 유리를 외력 기계 보조 장치 없이 무리하게 인력 조작하다가, 순간적으로 무게중심이 한쪽으로 가중(편심)되며 가설 작업대 전체가 뒤집어지거나 추락을 야기합니다.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 대표적인 재해 사례 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-rose-500">■</span> 2. 주요 재해사례 (Accident Cases)
+            </h2>
+            <div class="space-y-3 text-xs">
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">아파트 15층 수성도장 중 로프 모서리 마찰 파단</h4>
+                        <span class="text-slate-500 text-[10px]">외벽 가설 사례</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed mb-1"><strong>사고내용:</strong> 아파트 15층 높이에서 달비계 탑승 외벽 도장 작업 중 로프가 파손되어 약 40m 아래로 추락 사망함.</p>
+                    <p class="text-slate-400 leading-relaxed"><strong>사고원인:</strong> 옥상 모서리에 쓸림 방지용 보호대(매트)를 설치하지 않아 로프가 마모되었고, 독립된 수직 구명줄을 별도로 내려놓지 않아 안전대 체결이 불가능했음.</p>
+                </div>
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">외벽 대형 유리 거치 작업 중 편심 하중 전도</h4>
+                        <span class="text-slate-500 text-[10px]">유리 설치 사례</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed mb-1"><strong>사고내용:</strong> 빌딩 7층 외벽 유리 설치 교체 작업 중, 가설 작업대가 순간적으로 크게 기울어지며 작업자 2명이 유리와 함께 동반 추락하여 사망함.</p>
+                    <p class="text-slate-400 leading-relaxed"><strong>사고원인:</strong> 대형 유리를 옮겨 받는 과정에서 급격한 무게 쏠림(편심 하중)이 발생해 작업대가 뒤집혔으며, 안전대 고리를 수직 구명줄이 아닌 곤돌라 프레임에 잘못 연결하여 함께 추락함.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 안전성평가 실무 체크리스트 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-emerald-500">■</span> 3. 작업 단계별 안전 체크리스트 (Safety Checklist)
+            </h2>
+            <p class="text-[11px] text-slate-400 mb-4">항목을 클릭하면 완료 처리 선이 그어집니다.</p>
+            <div class="space-y-4">
+                <div>
+                    <h4 class="text-xs font-black text-amber-500 mb-2">[1단계] 작업 전 (Before) - 대비 단계</h4>
+                    <div class="space-y-1.5 text-xs">
+                        <label class="flex items-start gap-3 p-2 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                            <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                            <span class="text-slate-300">작업자가 턱끈 조임 안전모 및 이탈방지형 전신식 안전대를 오차 없이 올바르게 착용하였는가?</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-2 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                            <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                            <span class="text-slate-300">주 결속 작업선 이외에 확실한 단독 결속을 이행한 '수직 독립 구명줄(Life line)'을 추가 가설했는가?</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-2 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                            <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                            <span class="text-slate-300">사용 섬유로프에 부식, 변형, 소선 끊어짐 등 노화 및 외형상 에지 긁힘 흔적이 없는지 확인했는가?</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-2 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                            <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                            <span class="text-slate-300">로프 결속 고정부를 가설 난간이 아닌 옥상의 안전율 확보 기둥 등 견고한 고정점 2개소 이상에 다중 결속했는가?</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-2 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                            <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                            <span class="text-slate-300">콘크리트 옹벽 에지 모서리 및 석재 단부 닿는 곳에 고강도 고무 보호 매트 또는 롤러보호대를 설치했는가?</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-black text-amber-500 mb-2">[2단계] 작업 중 (During) - 실행 단계</h4>
+                    <div class="space-y-1.5 text-xs">
+                        <label class="flex items-start gap-3 p-2 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                            <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                            <span class="text-slate-300">달비계에 안착 즉시 개인 안전대 걸이 고리를 탑승대 바디가 아닌 독립 수직 구명줄(추락방지대 장치)에 직접 결속했는가?</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-2 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                            <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                            <span class="text-slate-300">1인 승선 제한 기준을 엄수하고 작업대 하부에 낙하 방지용 통제구역 라인 가설 및 신호수를 하부에 상주 배치했는가?</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-2 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                            <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                            <span class="text-slate-300">고중량 창유리 거치 시 무게 치우침을 제어하기 위해 윈치 등 기계 보조 양중 장비를 혼합하여 사용하는가?</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-xs font-black text-amber-500 mb-2">[3단계] 작업 후 (After) - 정리 단계</h4>
+                    <div class="space-y-1.5 text-xs">
+                        <label class="flex items-start gap-3 p-2 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                            <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                            <span class="text-slate-300">작업 종결 즉시 가설 로프 및 가이드줄을 현장에 무단 방치하지 않고 수거해 전용 자재 보관 캐비닛에 적치했는가?</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-2 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                            <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                            <span class="text-slate-300">사용 완료 후 가설 발판 상부에 낙하 우려가 있는 잔여 실란트 빈 캔, 결속 핀 등 잔재 자재를 깨끗이 수거 정리했는가?</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+
+      9: `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>전기 및 설비공사 위험성평가 시스템</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 p-6 min-h-screen">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <!-- 상단 헤더 -->
+        <div class="bg-slate-800 border-l-8 border-amber-500 p-6 rounded-r-2xl shadow-xl">
+            <h1 class="text-2xl font-black text-amber-500 flex items-center gap-2">
+                <i class="fa-solid fa-bolt"></i> 09. 전기 및 설비공사 위험성평가 가이드라인
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">임시 가설 배전 누전차단기 검증 및 화기 불티 비산포·밀폐공간 강제 급배기 환기</p>
+        </div>
+
+        <!-- 1. 주요 위험 요인 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-amber-500">■</span> 1. 공종별 핵심 위험 요인
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                <div class="bg-slate-950 p-4 rounded-xl border border-rose-500/30">
+                    <span class="bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">전류 감전</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">피복 손선 및 분전반 누전</h3>
+                    <p class="text-slate-400">장비 바퀴 밟힘·자재 긁힘에 따른 피복 손상 전선 방치 및 우천 우기 시 임시 가설 분전반 침수 누전 감전.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">화재 위험</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">배관 용접 불티 화재 비산</h3>
+                    <p class="text-slate-400">고온의 가스/전기 배관 용접 불티가 주변에 정리되지 않은 우레탄 폼 등 가연성 단열재에 인화 대형 화재 유발.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">질식 위험</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">밀폐공간 내 유해가스 질식</h3>
+                    <p class="text-slate-400">지하 물탱크, 좁은 기계실, 피트(Pit) 층 등 환기가 불량한 내부 용접 작업 시 산소 결핍 및 아르곤 가스 질식.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 대표적인 재해 사례 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-rose-500">■</span> 2. 현장 중대재해 발생 사례
+            </h2>
+            <div class="space-y-3 text-xs">
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">우천 후 습윤 환경 내 이동식 전동공구 감전 사고</h4>
+                        <span class="text-slate-500 text-[10px]">전기 감전 사례</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">여름철 우천 직후, 작업자가 빗물에 축축하게 젖은 섬유 목장갑을 낀 상태로 절연 외함 피복이 미세하게 까진 전동 그라인더 자재를 가동하다가 누전된 충격 전류가 인체에 전동 전가되어 사망함.</p>
+                </div>
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">설비 배관 용접 불티 가연성 단열재 인화 화재 사고</h4>
+                        <span class="text-slate-500 text-[10px]">설비 화재 사례</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">지하 기계실 배관 조립 용접 작업 중 고온의 불티 비산 방지 조치를 생략함. 불티가 하부에 그대로 적치 보관 중이던 가연성 단열 우레탄 폼 자재 파편에 튀며 유독 가스를 동반한 전면 대형 화재로 확산됨.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 안전성평가 실무 체크리스트 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-emerald-500">■</span> 3. 작업 전/중/후 핵심 안전 체크리스트
+            </h2>
+            <p class="text-[11px] text-slate-400 mb-4">항목을 클릭하면 완료 처리 선이 그어집니다.</p>
+            <div class="space-y-2 text-xs">
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">투입 전 임시 가설 가공 배전반의 누전차단기가 테스트 코일 단추 작동 시 정상 제어되는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">현장 이동식 전동 수공구 케이블 전선의 찢김 피복 손상이 없는지 육안 정밀 조사를 마쳤는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">용접 화기 작업 반경 11m 이내 가연성 물질을 이격하고 불티 비산 방지포와 정격 소화기를 현장 배치했는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">지하 물탱크, 피트 등 밀폐 구역 착공 전 내부 복합 가스(산소 농도, 유해가스)를 정밀 측정했는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">밀폐 공간 작업 전 과정을 통틀어 강제 급배기 환기 팬 플랜트를 상시 중단 없이 가동 제어하는가?</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+
+      10: `<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>해체 및 철거공사 위험성평가 시스템</title>
+    <script src="https://cdn.tailwindcss.com"><\/script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans KR', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 p-6 min-h-screen">
+    <div class="max-w-5xl mx-auto space-y-6">
+        <!-- 상단 헤더 -->
+        <div class="bg-slate-800 border-l-8 border-amber-500 p-6 rounded-r-2xl shadow-xl">
+            <h1 class="text-2xl font-black text-amber-500 flex items-center gap-2">
+                <i class="fa-solid fa-burst"></i> 10. 해체 및 철거공사 위험성평가 가이드라인
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">해체계획서 순서 준수 제어, 하부 잭서포트(Jack Support) 강재 분산 지지대 보강</p>
+        </div>
+
+        <!-- 1. 핵심 위험 요인 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-amber-500">■</span> 1. 공종별 핵심 위험 요인
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                <div class="bg-slate-950 p-4 rounded-xl border border-rose-500/30">
+                    <span class="bg-rose-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">연쇄 붕괴</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">구조물 일시 전도 및 붕괴</h3>
+                    <p class="text-slate-400">규정 순서를 무시하고 하부 내력벽이나 지지 기둥을 먼저 파쇄할 경우, 상부 하중에 의해 연쇄 붕괴.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-amber-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">잔재 낙하</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">파쇄 잔재물 고소 낙하</h3>
+                    <p class="text-slate-400">고소 구역 압쇄 크러셔 작동 중 콘크리트 거대 덩어리 및 강재 파편이 사방으로 비산·낙하하여 타격.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">장비 추락</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">진입 장비 바닥 슬래브 추락</h3>
+                    <p class="text-slate-400">상부 슬래브 위로 진입한 철거용 소형 굴착기가 바닥 슬래브 지지력 한계 부족 및 진동으로 하부 낙하.</p>
+                </div>
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                    <span class="bg-slate-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-2 inline-block">폭발 화재</span>
+                    <h3 class="font-bold text-sm text-slate-200 mb-1">잔류 유가스 배관 산소 폭발</h3>
+                    <p class="text-slate-400">설비 철거 시 인입 배관의 잔류 가스를 차단 및 환기 조치 없이 산소 용단기로 절단 중 불티에 의해 폭발.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 대표적인 재해 사례 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-rose-500">■</span> 2. 현장 중대재해 발생 사례
+            </h2>
+            <div class="space-y-3 text-xs">
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">해체 순서 미준수로 인한 외벽 전도 붕괴 참사</h4>
+                        <span class="text-slate-500 text-[10px]">해체 전도 사례</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">건물 해체 작업 시 상부 잔재 하중을 제거하지 않고 작업 효율을 이유로 하부 하중 지지 벽체를 임의로 먼저 헐어버림. 불균형 모멘트를 이기지 못한 측벽 구조물이 도로변 안전 울타리를 덮치며 붕괴되어 대형 사상자가 발생함.</p>
+                </div>
+                <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-rose-600">
+                    <div class="flex justify-between items-center mb-1">
+                        <h4 class="font-bold text-sm text-rose-400">하부 동바리 잭서포트 미보강 슬래브 붕괴 추락 사고</h4>
+                        <span class="text-slate-500 text-[10px]">철거 추락 사례</span>
+                    </div>
+                    <p class="text-slate-400 leading-relaxed">건물 3층 바닥 상부에서 파쇄를 위해 중형 해체 굴착기를 전진 배치시켰으나, 장비 하중과 진동을 받아줄 아래층 하부에 잭서포트(Jack Support) 지지 장치를 보강하지 않음. 타설 강도 한계를 초과하여 슬래브가 내려앉으며 굴착기와 근로자가 함께 하부로 추락 사망함.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 안전성평가 실무 체크리스트 -->
+        <div class="bg-slate-800/60 border border-slate-700 p-6 rounded-2xl">
+            <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2 border-b border-slate-700 pb-2">
+                <span class="text-emerald-500">■</span> 3. 현장 안전대책 체크리스트 (Checklist)
+            </h2>
+            <p class="text-[11px] text-slate-400 mb-4">항목을 클릭하면 완료 처리 선이 그어집니다.</p>
+            <div class="space-y-2 text-xs">
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">지자체 및 인가 기관의 최종 승인을 받은 정식 '해체작업계획서'가 현장에 올바르게 가설 비치되었는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">구조 붕괴 전도를 제어하기 위해 규정된 법적 순서(상부에서 하부, 외곽에서 내부)를 오차 없이 실행하는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">압쇄 굴착 장비가 진입하는 바로 하부 슬래브 전역에 강재 분산형 잭서포트(Jack Support) 동바리를 밀착 보강했는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">파쇄 콘크리트 잔재물이 외곽으로 튀어나가지 않도록 비산 방지망, 외부 수직 방호벽 및 가설 울타리를 견고히 보강했는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">해체 착공 전 건물 내부로 인입되는 가스 배관, 고압 수전설비 및 수도 배관의 공급을 전면 완전 차단(메인 밸브 봉인)했는가?</span>
+                </label>
+                <label class="flex items-start gap-3 p-3 bg-slate-950 rounded-xl border border-slate-800 cursor-pointer select-none hover:bg-slate-900 transition-colors">
+                    <input type="checkbox" class="mt-0.5 w-4 h-4 accent-emerald-500 rounded border-slate-700" onchange="this.nextElementSibling.classList.toggle('line-through'); this.nextElementSibling.classList.toggle('text-slate-500')">
+                    <span class="text-slate-300">해체 기계 조작 선회 반경 내에 무단 근입자가 발생하지 않도록 전면 바리케이드 통제선을 치고 신호수를 배치했는가?</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`
+    };
+
+    // 메뉴 전환 메인 라우터
+    function changeMenu(menuId) {
+      currentMenu = menuId;
+      renderCurrentMenu();
+      updateMenuButtonsHighlight();
+    }
+
+    // 메뉴 버튼 하이라이트 활성화 제어
+    function updateMenuButtonsHighlight() {
+      const buttons = document.querySelectorAll('.menu-btn');
+      buttons.forEach(btn => {
+        // 기본 비활성 스타일 (어두운 배경 알약)
+        btn.className = "menu-btn px-4 py-2 rounded-full text-sm font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all duration-200";
+      });
+
+      // 게시판 전용 버튼 기본 테두리 스타일
+      const boardBtn = document.getElementById('btn-board');
+      if (boardBtn) {
+        boardBtn.className = "menu-btn ml-1 md:ml-4 px-5 py-2.5 rounded-full text-sm font-semibold border-2 border-slate-500 bg-transparent hover:bg-slate-800 text-slate-300 transition-all duration-200";
+      }
+
+      // 홈 전용 버튼 기본 스타일
+      const homeBtn = document.getElementById('btn-home');
+      if (homeBtn) {
+        homeBtn.className = "menu-btn px-5 py-2.5 rounded-full text-sm font-bold bg-slate-800 text-slate-200 hover:bg-slate-700 transition-all duration-200";
+      }
+
+      // 개별 메뉴 선택에 따른 노란색 포인트 활성화 강조
+      if (currentMenu === 'home') {
+        if (homeBtn) homeBtn.className = "menu-btn px-5 py-2.5 rounded-full text-sm font-bold bg-brandYellow hover:bg-brandYellowHover text-slate-900 shadow-md transition-all duration-200";
+      } else if (currentMenu === 'board') {
+        if (boardBtn) boardBtn.className = "menu-btn ml-1 md:ml-4 px-5 py-2.5 rounded-full text-sm font-semibold bg-brandYellow hover:bg-brandYellowHover text-slate-900 border-2 border-brandYellow transition-all duration-200 shadow-md";
+      } else {
+        const activeBtn = document.getElementById(`btn-${currentMenu}`);
+        if (activeBtn) {
+          activeBtn.className = "menu-btn px-5 py-2.5 rounded-full text-sm font-black bg-white text-slate-900 border-2 border-brandYellow shadow-md transition-all duration-200 scale-105";
+        }
+      }
+    }
+
+    // 뷰포트 전환 및 Iframe 데이터 주입 렌더러
+    function renderCurrentMenu() {
+      const homeSection = document.getElementById('content-home');
+      const topicSection = document.getElementById('content-topic');
+      const boardSection = document.getElementById('content-board');
+      const iframe = document.getElementById('content-iframe');
+      const addressBar = document.getElementById('viewport-address');
+
+      // 초기화 숨김
+      homeSection.classList.add('hidden');
+      topicSection.classList.add('hidden');
+      boardSection.classList.add('hidden');
+
+      if (currentMenu === 'home') {
+        homeSection.classList.remove('hidden');
+      } else if (currentMenu === 'board') {
+        boardSection.classList.remove('hidden');
+      } else {
+        // 공종별 세부 화면 및 Iframe 연동 활성화
+        topicSection.classList.remove('hidden');
+        
+        // 공종 이름 목록 바인딩 맵
+        const topicNames = {
+          1: "토공사",
+          2: "기초 및 말뚝공사",
+          3: "철근공사",
+          4: "거푸집 및 동바리 공사",
+          5: "콘크리트 타설공사",
+          6: "비계 및 가설구조물 공사",
+          7: "철골 공사",
+          8: "마감 및 외벽 도장공사",
+          9: "전기 및 설비공사",
+          10: "해체 및 철거공사"
+        };
+
+        const currentName = topicNames[currentMenu];
+        addressBar.innerText = `1-${currentMenu}.html (${currentName} 안전성평가 가이드라인)`;
+
+        // 원본 코드를 가져와서 iframe srcdoc으로 동적 로드
+        const targetHtml = subpagesContent[currentMenu];
+        if (targetHtml) {
+          iframe.srcdoc = targetHtml;
+        } else {
+          iframe.srcdoc = `<html><body style="font-family:sans-serif; padding:40px;"><p>가이드라인 문서를 불러오지 못했습니다.</p></body></html>`;
+        }
+        
+        showToast(`✔ 1-${currentMenu}.html (${currentName}) 콘텐츠를 실시간 연동하여 가동했습니다.`);
+      }
+    }
+
+    // 알림 토스트 팝업 
+    function showToast(msg) {
+      const banner = document.getElementById('toastNotification');
+      const txt = document.getElementById('toastText');
+      txt.innerText = "📢 " + msg;
+      banner.classList.remove('hidden');
+      setTimeout(() => {
+        if (txt.innerText.includes(msg)) {
+          closeToast();
+        }
+      }, 5000);
+    }
+
+    function closeToast() {
+      document.getElementById('toastNotification').classList.add('hidden');
+    }
+
+    // 📱 스마트 현장 모바일 연동 QR코드 초기화
+    function initQRCode() {
+      const qrImg = document.getElementById('qr-code-img');
+      const qrUrlSpan = document.getElementById('qr-code-url');
+      const customInput = document.getElementById('custom-qr-url');
+      
+      let currentUrl = window.location.href;
+      // 로컬 파일 시스템이거나 비어있을 시 데모 링크 표시
+      if (currentUrl.startsWith('file://') || currentUrl.includes('localhost') || currentUrl.includes('127.0.0.1')) {
+        currentUrl = "https://safety-portal-team1.co.kr"; 
+      }
+      
+      qrUrlSpan.innerText = currentUrl;
+      customInput.value = currentUrl;
+      
+      // QR Code Generator API를 통한 이미지 동적 연동
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(currentUrl)}`;
+    }
+
+    // 📱 사용자 지정 주소로 QR코드 재생성
+    function updateCustomQR() {
+      const customInput = document.getElementById('custom-qr-url');
+      const qrImg = document.getElementById('qr-code-img');
+      const qrUrlSpan = document.getElementById('qr-code-url');
+      
+      let targetUrl = customInput.value.trim();
+      if (!targetUrl) {
+        showToast("⚠️ 연결할 가이드 주소를 올바르게 입력해 주세요!");
+        return;
+      }
+      
+      qrUrlSpan.innerText = targetUrl;
+      qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(targetUrl)}`;
+      showToast("📱 입력하신 가이드 연결용 URL 주소로 QR코드를 실시간 생성했습니다.");
+    }
+
+    // 💬 댓글 저장 및 랜더러 엔진
+    function initComments() {
+      // 기본 피드백 데이터 셋업 (시연용)
+      const defaultComments = [
+        { id: 1, writer: "조원 A (서기)", text: "1-4번 거푸집 좌굴 안전성 시뮬레이터가 연동된 화면을 조별 발표 시연 시 강력하게 추천합니다. 교차 가새 보강 여부에 따른 기둥 처짐 변위가 즉각 나타나네요!", date: "2026-07-07 10:15" },
+        { id: 2, writer: "조원 B (정리)", text: "말뚝공사의 부등침하 전도사고와 해체공사의 잭서포트(동바리) 미보강 붕괴 원인이 공종별 수칙에 동일한 포맷으로 정리되어 한결 일목요연해 보입니다.", date: "2026-07-07 11:32" },
+        { id: 3, writer: "조장 (발표자)", text: "댓글 시스템은 로컬 브라우저 세션과 연계되어 독립 HTML 파일을 다운로드받아 실행해도 의견 저장이 유지됩니다. 교수님 실무설계 평가 시 가산점으로 연계하기 매우 훌륭합니다! 다들 고생 많으셨습니다. 👍", date: "2026-07-07 14:02" }
+      ];
+
+      const stored = localStorage.getItem('team1_safety_board_comments');
+      if (stored) {
+        try {
+          comments = JSON.parse(stored);
+        } catch (e) {
+          comments = defaultComments;
+        }
+      } else {
+        comments = defaultComments;
+        saveComments();
+      }
+      renderComments();
+    }
+
+    // 댓글 로컬 저장
+    function saveComments() {
+      localStorage.setItem('team1_safety_board_comments', JSON.stringify(comments));
+    }
+
+    // 댓글 출력
+    function renderComments() {
+      const container = document.getElementById('comment-list');
+      const msg = document.getElementById('no-comment-msg');
+      const countSpan = document.getElementById('comment-count');
+      
+      container.innerHTML = '';
+      countSpan.innerText = `의견 ${comments.length}개`;
+
+      if (comments.length === 0) {
+        msg.className = "text-center py-10 text-slate-400 text-xs";
+        container.appendChild(msg);
+        return;
+      }
+
+      comments.forEach(item => {
+        const commentDiv = document.createElement('div');
+        commentDiv.className = "p-3.5 bg-slate-50 border border-slate-100 rounded-xl relative group transition-all hover:bg-slate-100 flex flex-col md:flex-row justify-between md:items-center gap-2";
+        commentDiv.innerHTML = `
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-xs font-bold text-slate-800">${escapeHtml(item.writer)}</span>
+              <span class="text-[10px] text-slate-400 font-medium">${item.date}</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed font-normal">${escapeHtml(item.text)}</p>
+          </div>
+          <button onclick="deleteComment(${item.id})" class="text-slate-400 hover:text-red-500 font-bold text-xs p-1 md:opacity-0 group-hover:opacity-100 transition-opacity ml-2 shrink-0" title="삭제">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        `;
+        container.appendChild(commentDiv);
+      });
+    }
+
+    // 댓글 등록
+    function addComment() {
+      const writerInput = document.getElementById('comment-writer');
+      const textInput = document.getElementById('comment-text');
+      
+      const writer = writerInput.value.trim();
+      const text = textInput.value.trim();
+      
+      if (!writer || !text) {
+        showToast("⚠️ 의견을 등록하려면 작성자 성함과 내용이 모두 기입되어야 합니다!");
+        return;
+      }
+
+      const now = new Date();
+      const formattedDate = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+
+      const newComment = {
+        id: Date.now(),
+        writer: writer,
+        text: text,
+        date: formattedDate
+      };
+
+      comments.push(newComment);
+      saveComments();
+      renderComments();
+      
+      // 인풋 초기화
+      writerInput.value = '';
+      textInput.value = '';
+      
+      showToast("💬 자유게시판에 실시간 실무 의견이 성공적으로 축적되었습니다!");
+    }
+
+    // 댓글 삭제
+    function deleteComment(id) {
+      comments = comments.filter(item => item.id !== id);
+      saveComments();
+      renderComments();
+      showToast("🗑️ 선택하신 소통 의견을 정상적으로 안전하게 삭제 처리했습니다.");
+    }
+
+    // 특수문자 이스케이프
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // 모든 하위 데이터와 프레임워크가 완전히 내포된 독립 실행 단일 HTML 파일로 조원 제출용 다운로드
+    function exportFullHTML() {
+      const date = new Date();
+      const filename = `1조_통합_공종별_위험성평가_산출물_${date.getFullYear()}${(date.getMonth()+1).toString().padStart(2,'0')}${date.getDate().toString().padStart(2,'0')}.html`;
+
+      // 현재 최신 소스코드 전체를 따서 단일 배포용 HTML 파일 트리거 생성
+      const rawHTML = document.documentElement.outerHTML;
+      const blob = new Blob([rawHTML], { type: 'text/html;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast("💾 모든 연동 데이터가 완벽하게 내장된 '1조 포트폴리오 통합 HTML'이 다운로드 완료되었습니다.");
+    }
+
+    // 초기 상태 렌더러 기동
+    window.onload = function() {
+      renderCurrentMenu();
+      updateMenuButtonsHighlight();
+      initQRCode();
+      initComments();
+    };
+  </script>
+</body>
+</html>
